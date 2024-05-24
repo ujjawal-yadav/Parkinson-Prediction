@@ -1,0 +1,164 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parkinson's Disease Detector</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom, #4CAF50, #2E8B57);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        .header {
+            text-align: center;
+            margin-top: 50px;
+            font-family: roboto;
+            color: white;
+            margin-right: 40px;
+            font-size: 66px;
+        }
+        .container {
+            background: linear-gradient(to bottom right, #2980b9, #2c3e50);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 400px;
+            position: relative;
+            overflow: hidden;
+            margin-right: 20px;
+        }
+        h1 {
+            color: #fff;
+            margin-bottom: 20px;
+        }
+        p {
+            color: #fff;
+            margin-bottom: 30px;
+        }
+        #image-upload1{
+            display: none;
+        }
+        #upload-label1 {
+            padding: 15px 30px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        #upload-label1:hover {
+            background-color: #0056b3;
+        }
+        #detect-btn {
+            padding: 15px 30px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 40px;
+        }
+        #detect-btn:hover {
+            background-color: #218838;
+        }
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+            color: #fff;
+        }
+        .loading-animation {
+            border: 8px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 8px solid #fff;
+            width: 60px;
+            height: 60px;
+            animation: spin 2s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        #uploaded-image {
+            max-width: 100%;
+            margin-top: 20px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">Parkinson's Disease Predictor</div>
+
+    <div class="container">
+        <h1>Upload your drawing of a spiral or a wave to check for Parkinson's disease.</h1>
+        <label for="image-upload1" id="upload-label1">Upload Image</label>
+        <input type="file" id="image-upload1">
+        <button id="detect-btn">Detect</button>
+        <div id="result"></div>
+        <img src="#" id="uploaded-image" style="display: none;">
+    </div>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    document.getElementById('image-upload1').addEventListener('change', function(){
+        var fileInput1 = document.getElementById('image-upload1');
+        var file = fileInput1.files[0];
+        var reader = new FileReader();
+
+        reader.onloadend = function () {
+            document.getElementById('uploaded-image').src = reader.result;
+            document.getElementById('uploaded-image').style.display = 'block';
+        }
+
+        if (file) {
+            reader.readAsDataURL(file);
+        } else {
+            document.getElementById('uploaded-image').src = "";
+        }
+    });
+
+    document.getElementById('detect-btn').addEventListener('click', function(){
+        var fileInput1 = document.getElementById('image-upload1');
+        var file = fileInput1.files[0];
+
+        console.log("Button clicked");
+        console.log("File : ", file);
+
+        var formData = new FormData();
+        formData.append('file', file);
+
+        console.log("Form Data: ", formData);
+
+        axios.post('http://localhost:5000/predict', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        }).then(function(response){
+            console.log("Response from server: ", response);
+            // Calculate average prediction
+            var avg_prediction = response.data.average_prediction[0];
+            document.getElementById('result').innerHTML = 'Average Parkinson Probability: ' + 
+                avg_prediction[1] + ', Average Healthy Probability: ' + 
+                avg_prediction[0];
+        }).catch(function(error){
+            console.error("Error from server: ", error);
+        });
+    });
+</script>
+
+
+</body>
+</html>
