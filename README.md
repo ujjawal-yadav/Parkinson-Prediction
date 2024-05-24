@@ -37,4 +37,6 @@ The model achieved an accuracy of 85.91% on the validation dataset, demonstratin
 # Dataset
 The dataset comprises spiral drawings collected from individuals with and without Parkinson's disease. The images are preprocessed and resized to 128x128 pixels for input into the CNN model.
 
+![Screenshot (379)](https://github.com/ujjawal-yadav/Parkinson-Prediction/assets/81307555/3b165fd6-7817-476e-8695-8f7d216de1d2)
+
 
