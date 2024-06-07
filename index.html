@@ -186,7 +186,7 @@ document.getElementById('upload-label1').addEventListener('click', function() {
         
         document.getElementById('loading-animation').style.display = 'block';
 
-        axios.post('/predict', formData, {
+        axios.post('https://parkinson-prediction.vercel.app/predict', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
